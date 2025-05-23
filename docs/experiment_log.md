@@ -19,7 +19,7 @@ We extend the experiments from NQ to seven datasets with both PPO and GRPO metho
 
 ### v0.2
 
-Resources: [wandb](https://wandb.ai/peterjin/Search-R1-v0.2), [docs](https://github.com/PeterGriffinJin/Search-R1/tree/main/scripts/nq_hotpotqa), [scripts](https://github.com/PeterGriffinJin/Search-R1/tree/main/scripts/nq_hotpotqa/v0.2)
+Resources: [wandb](https://wandb.ai/peterjin/Search-R1-v0.2), [docs](https://github.com/PeterGriffinJin/Search-R1/tree/main/scripts/nq_hotpotqa), [scripts](https://github.com/PeterGriffinJin/Search-R1/tree/main/scripts/nq_hotpotqa/v0.2), [paper](https://arxiv.org/abs/2503.09516)
 
 
 We fix several bugs including [retrieved token masking](https://github.com/PeterGriffinJin/Search-R1/pull/21) and [GRPO sample indexing](https://github.com/PeterGriffinJin/Search-R1/commit/9ec2fa9892fbf0315d0c67b4dc08ae8f6cf5f378). 
@@ -29,5 +29,19 @@ Then we adjust the training scripts, increasing the number of training steps and
 
 ### v0.3
 
-Ongoing, stay tuned!
+Resources: [wandb](https://wandb.ai/peterjin/Search-R1-v0.3), [docs](https://github.com/PeterGriffinJin/Search-R1/tree/main/scripts/nq_hotpotqa), [scripts](https://github.com/PeterGriffinJin/Search-R1/tree/main/scripts/nq_hotpotqa/v0.3), [paper](https://arxiv.org/abs/2505.15117)
 
+We conduct studies on (1) reward design; (2) LLM backbone; and (3) search engine.
+
+- Reward design
+  - Format reward
+  - Intermediate retrieval reward
+- LLM backbone
+  - LLM type (e.g., general LLM or reasoning LLM)
+  - LLM scale (3B/7B/14B/32B)
+- Search engine
+  - RL training dynamics
+  - generalization during inference
+- Data scaling
+
+Details can be found in the [paper](https://arxiv.org/abs/2505.15117).

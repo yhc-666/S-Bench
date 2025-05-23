@@ -4,6 +4,24 @@
   <img src="https://raw.githubusercontent.com/PeterGriffinJin/Search-R1/main/public/logo.png" alt="logo" width="300"/>
 </div>
 
+<p align="center">
+  <a href="https://arxiv.org/abs/2503.09516">
+    <img src="https://img.shields.io/badge/Paper1-blue?style=for-the-badge" alt="Button1"/>
+  </a>
+  <a href="https://arxiv.org/abs/2505.15117">
+    <img src="https://img.shields.io/badge/Paper2-green?style=for-the-badge" alt="Button2"/>
+  </a>
+  <a href="https://huggingface.co/collections/PeterJinGo/search-r1-67d1a021202731cb065740f5">
+    <img src="https://img.shields.io/badge/Resources-orange?style=for-the-badge" alt="Button3"/>
+  </a>
+  <a href="https://x.com/BowenJin13/status/1895544294473109889">
+    <img src="https://img.shields.io/badge/Tweet-red?style=for-the-badge" alt="Button4"/>
+  </a>
+  <a href="https://wandb.ai/peterjin/Search-R1-v0.2">
+    <img src="https://img.shields.io/badge/Logs-purple?style=for-the-badge" alt="Button5"/>
+  </a>
+</p>
+
 
 <!-- <strong>Search-R1</strong> is a reinforcement learning framework for <em>training reasoning and searching (tool-call) interleaved LLMs</em>.  -->
 <!-- We built upon [veRL](https://github.com/volcengine/verl). -->
@@ -16,7 +34,7 @@ Built upon [veRL](https://github.com/volcengine/verl), Search-R1 extends the ide
 
 We support different RL methods (e.g., PPO, GRPO, reinforce), different LLMs (e.g., llama3, Qwen2.5, etc) and different search engines (e.g., local sparse/dense retrievers and online search engines).
 
-Paper: [link](https://arxiv.org/pdf/2503.09516); Model and data: [link](https://huggingface.co/collections/PeterJinGo/search-r1-67d1a021202731cb065740f5); Twitter thread: [link](https://x.com/BowenJin13/status/1895544294473109889); Full experiment log: [prelim](https://wandb.ai/peterjin/Search-R1-open); [v0.1](https://wandb.ai/peterjin/Search-R1-nq_hotpotqa_train); [v0.2](https://wandb.ai/peterjin/Search-R1-v0.2). Details about these logs and methods can be find [here](https://github.com/PeterGriffinJin/Search-R1/blob/main/docs/experiment_log.md).
+Paper: [link1](https://arxiv.org/pdf/2503.09516), [link2](https://arxiv.org/abs/2505.15117); Model and data: [link](https://huggingface.co/collections/PeterJinGo/search-r1-67d1a021202731cb065740f5); Twitter thread: [link](https://x.com/BowenJin13/status/1895544294473109889); Full experiment log: [prelim](https://wandb.ai/peterjin/Search-R1-open); [v0.1](https://wandb.ai/peterjin/Search-R1-nq_hotpotqa_train); [v0.2](https://wandb.ai/peterjin/Search-R1-v0.2); [v0.3](https://wandb.ai/peterjin/Search-R1-v0.3). Details about these logs and methods can be find [here](https://github.com/PeterGriffinJin/Search-R1/blob/main/docs/experiment_log.md).
 
 
 ![single-turn](public/main.png)
