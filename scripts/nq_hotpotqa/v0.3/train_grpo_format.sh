@@ -5,25 +5,30 @@ export DATA_DIR=data/${data_name} # first download the data from https://hugging
 
 WAND_PROJECT="Search-R1"
 
-# export BASE_MODEL='Qwen/Qwen2.5-3B'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-3b-em
+export BASE_MODEL='Qwen/Qwen2.5-3B'
+export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-3b-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-3B-Instruct'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-3b-it-em
-export BASE_MODEL='Qwen/Qwen2.5-7B'
-export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-7b-em
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-3b-it-em-structureformat
+# export BASE_MODEL='Qwen/Qwen2.5-7B'
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-7b-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-7B-Instruct'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-7b-it-em
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-7b-it-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-14B'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-14b-em
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-14b-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-14B-Instruct'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-14b-it-em
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-14b-it-em-structureformat
+
+# export BASE_MODEL='deepseek-ai/DeepSeek-R1-Distill-Qwen-7B'
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-deepseekr1-7b-em-structureformat
+# export BASE_MODEL='deepseek-ai/DeepSeek-R1-Distill-Qwen-14B'
+# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-deepseekr1-14b-em-structureformat
 
 # set -x
 export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has some issues
 
 # max_prompt_length = (config['training']['max_start_length'] + config['training']['max_response_length'] * (config['training']['max_turns'] - 1) + config['training']['max_obs_length'] * config['training']['max_turns'])
 
-PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
+PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo_format \
     data.train_files=$TRAIN_DATA_DIR/train.parquet \
     data.val_files=$TEST_DATA_DIR/test.parquet \
     data.train_data_num=null \
@@ -39,7 +44,7 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.path=$BASE_MODEL \
     actor_rollout_ref.model.enable_gradient_checkpointing=true \
     actor_rollout_ref.model.use_remove_padding=True \
-    actor_rollout_ref.actor.optim.lr=1e-6 \
+    actor_rollout_ref.actor.optim.lr=5e-7 \
     actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.285 \
     actor_rollout_ref.actor.use_kl_loss=true \
     actor_rollout_ref.actor.ppo_mini_batch_size=256 \
@@ -72,8 +77,11 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     trainer.total_epochs=15 \
     trainer.total_training_steps=1005 \
     trainer.default_hdfs_dir=null \
-    trainer.default_local_dir=verl_checkpoints/$EXPERIMENT_NAME \
+    trainer.default_local_dir=/home/peterjin/verl_checkpoints/$EXPERIMENT_NAME \
+    reward_model.structure_format_score=0.2 \
+    reward_model.final_format_score=0.1 \
+    reward_model.retrieval_score=0 \
     max_turns=4 \
     retriever.url="http://127.0.0.1:8000/retrieve" \
     retriever.topk=3 \
-    2>&1 | tee $EXPERIMENT_NAME.log
+    2>&1 | tee /home/peterjin/rl_logs/$EXPERIMENT_NAME.log
