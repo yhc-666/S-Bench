@@ -246,7 +246,7 @@ We sincerely appreciate the efforts of these teams for their contributions to op
 }
 ```
 
-```
+```bibtex
 @article{jin2025empirical,
   title={An Empirical Study on Reinforcement Learning for Reasoning-Search Interleaved LLM Agents},
   author={Jin, Bowen and Yoon, Jinsung and Kargupta, Priyanka and Arik, Sercan O and Han, Jiawei},
