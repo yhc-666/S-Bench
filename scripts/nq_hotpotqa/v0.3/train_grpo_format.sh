@@ -6,22 +6,22 @@ export DATA_DIR=data/${data_name} # first download the data from https://hugging
 WAND_PROJECT="Search-R1"
 
 export BASE_MODEL='Qwen/Qwen2.5-3B'
-export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-3b-em-structureformat
+export EXPERIMENT_NAME=${data_name}-search-r1-grpo-qwen2.5-3b-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-3B-Instruct'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-3b-it-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-qwen2.5-3b-it-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-7B'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-7b-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-qwen2.5-7b-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-7B-Instruct'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-7b-it-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-qwen2.5-7b-it-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-14B'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-14b-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-qwen2.5-14b-em-structureformat
 # export BASE_MODEL='Qwen/Qwen2.5-14B-Instruct'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-qwen2.5-14b-it-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-qwen2.5-14b-it-em-structureformat
 
 # export BASE_MODEL='deepseek-ai/DeepSeek-R1-Distill-Qwen-7B'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-deepseekr1-7b-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-deepseekr1-7b-em-structureformat
 # export BASE_MODEL='deepseek-ai/DeepSeek-R1-Distill-Qwen-14B'
-# export EXPERIMENT_NAME=${train_data}-${test_data}-search-r1-grpo-deepseekr1-14b-em-structureformat
+# export EXPERIMENT_NAME=${data_name}-search-r1-grpo-deepseekr1-14b-em-structureformat
 
 # set -x
 export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has some issues
@@ -29,8 +29,8 @@ export VLLM_ATTENTION_BACKEND=XFORMERS # vllm + qwen2-7b with flash_attn has som
 # max_prompt_length = (config['training']['max_start_length'] + config['training']['max_response_length'] * (config['training']['max_turns'] - 1) + config['training']['max_obs_length'] * config['training']['max_turns'])
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo_format \
-    data.train_files=$TRAIN_DATA_DIR/train.parquet \
-    data.val_files=$TEST_DATA_DIR/test.parquet \
+    data.train_files=$DATA_DIR/train.parquet \
+    data.val_files=$DATA_DIR/test.parquet \
     data.train_data_num=null \
     data.val_data_num=null \
     data.train_batch_size=512 \
