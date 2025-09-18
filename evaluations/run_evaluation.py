@@ -66,8 +66,20 @@ def initialize_search(config: Dict, search_method: str) -> Any:
 def get_prompt_config(config: Dict, model_name: str, search_method: str) -> Dict:
     """Get appropriate prompt configuration."""
     prompts = config['prompts']
-    # Simply return the prompt for the search method
-    return prompts['prompts'][search_method + '_based']
+
+    if search_method == 'tag':
+        return prompts['prompts']['tag_based']
+    elif search_method == 'function':
+        # Determine model type to select correct prompt variant
+        model_config = config['models']['models'][model_name]
+        model_type = model_config.get('type', 'closed_source')
+
+        if model_type == 'closed_source':
+            return prompts['prompts']['function_based_closed_source']
+        else:
+            return prompts['prompts']['function_based_open_source']
+    else:
+        raise ValueError(f"Unknown search method: {search_method}")
 
 
 def evaluate_single(
