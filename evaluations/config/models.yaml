@@ -1,12 +1,12 @@
 # Model configurations
 # Select which model to evaluate
-active_model: gpt-4  # Change to: gpt-4, deepseek, qwen-7b, llama-8b
+active_model: qwen3-8b  # Change to: gpt-4, deepseek, qwen3-8b, llama-8b
 
 models:
   gpt-4:
     type: closed_source
     api_key: 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
-    endpoint: https://api.openai.com/v1/chat/completions
+    endpoint: https://api.openai.com/v1/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
     model_name: gpt-4o-2024-08-06
     max_tokens: 2048
     temperature: 0.7
@@ -21,9 +21,9 @@ models:
     temperature: 0.7
     timeout: 60
 
-  qwen-7b:
+  qwen3-8b:
     type: open_source
-    model_path: Qwen/Qwen2.5-7B-Instruct
+    model_path: /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtsearch-assistant/ai-search/deepsearch_files/LLMbasemodels/huggingface.co/Qwen/Qwen3-8B
     server_url: http://localhost:8000
     max_tokens: 2048
     temperature: 0.7

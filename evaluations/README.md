@@ -46,11 +46,10 @@ bash rag_server/launch.sh
 
 For open-source models:
 ```bash
-# Reads model config from evaluations/config/models.yaml
-evaluations/scripts/start_vllm.sh qwen-7b
-
-# Or for LLaMA
-evaluations/scripts/start_vllm.sh llama-8b
+python -m vllm.entrypoints.openai.api_server \
+      --model Qwen/Qwen3-8B \
+      --port 8000 \
+      --served-model-name Qwen/Qwen3-8B
 ```
 
 ## Run Evaluation
