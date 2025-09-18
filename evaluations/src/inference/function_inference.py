@@ -31,19 +31,30 @@ class FunctionInference:
         Returns:
             Dictionary containing answer, messages, tool calls, and iterations
         """
-        # Initialize clean message history
+        tools = self.search_handler.get_tool_schemas()
+
+        # Initialize message history
         messages = []
+
+        is_open_source = 'open_source' in str(self.prompt_config).lower() or '{{TOOLS_PLACEHOLDER}}' in self.prompt_config.get('system', '')
+
         if self.prompt_config.get('system'):
+            system_content = self.prompt_config['system']
+
+            if is_open_source and '{{TOOLS_PLACEHOLDER}}' in system_content:
+                import json
+                tools_json = json.dumps(tools, ensure_ascii=False, indent=2)
+                system_content = system_content.replace('{{TOOLS_PLACEHOLDER}}', tools_json)
+
             messages.append({
                 "role": "system",
-                "content": self.prompt_config['system']
+                "content": system_content
             })
+
         messages.append({
             "role": "user",
             "content": self.prompt_config['user'].format(question=question)
         })
-
-        tools = self.search_handler.get_tool_schemas()
 
         all_function_calls = []
         iterations = 0
@@ -53,17 +64,15 @@ class FunctionInference:
             while iterations < self.max_iterations:
                 iterations += 1
 
-                # Generate response with functions
                 response = self.model.generate_with_functions(messages, tools)
 
-                # Parse function calls from response
                 function_calls = self.search_handler.parse_tool_calls(response) # check if <tool_call>...</tool_call> exists in the response
 
                 if function_calls:
+                    # Assistant message only contains content (including XML tool calls inside), 移除tool_calls
                     messages.append({
                         "role": "assistant",
-                        "content": response.get('content', ''),
-                        "tool_calls": response.get('tool_calls', [])
+                        "content": response.get('content', '')
                     })
 
                     # Execute each function call
@@ -127,35 +136,23 @@ class FunctionInference:
             return {
                 'answer': None,
                 'error': str(e),
-                'messages': messages,
-                'tool_calls': all_function_calls,  
-                'iterations': iterations
+                'messages': messages  # Simplified: only keep messages
             }
 
-    def _format_results(self, answer: Any, messages: List[Dict], function_calls: List[Dict], iterations: int) -> Dict[str, Any]:
+    def _format_results(self, answer: Any, messages: List[Dict], function_calls: List[Dict] = None, iterations: int = None) -> Dict[str, Any]:
         """
-        Format the results for output.
+        Format the results for output (simplified).
 
         Args:
             answer: Extracted answer
             messages: Complete message history
-            function_calls: Summary of all function calls
-            iterations: Number of iterations
+            function_calls: Summary of all function calls (unused in simplified format)
+            iterations: Number of iterations (unused in simplified format)
 
         Returns:
-            Formatted results dictionary
+            Simplified results dictionary
         """
-        search_queries = []
-        for fc in function_calls:
-            if 'search' in fc.get('function', ''):
-                query = fc.get('arguments', {}).get('query', '')
-                if query:
-                    search_queries.append(query)
-
         return {
             'answer': answer,
-            'messages': messages,  # Clean message history
-            'tool_calls': function_calls,  # Summary of function calls (backward compatibility)
-            'search_queries': search_queries,  # For backward compatibility with metrics
-            'iterations': iterations
+            'messages': messages  # Only keep answer and full message history
         }

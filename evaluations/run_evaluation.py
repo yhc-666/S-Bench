@@ -93,9 +93,7 @@ def evaluate_single(
         print(f"Error evaluating question: {e}")
         return {
             'answer': None,
-            'error': str(e),
-            'search_queries': [],
-            'iterations': 0
+            'error': str(e)
         }
 
 
@@ -194,26 +192,21 @@ def main():
             )
 
             # Add metadata
-            result['id'] = item['id']
-            result['question'] = item['question']
-            result['ground_truths'] = item['answers']
-            result['prediction'] = result.get('answer', '')
+            # Simplified result format
+            simplified_result = {
+                'id': item['id'],
+                'question': item['question'],
+                'gold_answer': item['answers'][0] if item['answers'] else '',  # Use first answer as gold
+                'prediction': result.get('answer', '')
+            }
 
-            # Add trajectory data based on method
+            # Add method-specific data
             if search_method == 'tag':
-                result['trajectory'] = {
-                    'method': 'tag',
-                    'full_response': result.get('full_response', ''),
-                    'trajectory_steps': result.get('trajectory', []),
-                    'iterations': result.get('iterations', 0)
-                }
+                simplified_result['response'] = result.get('response', '')
             elif search_method == 'function':
-                result['trajectory'] = {
-                    'method': 'function',
-                    'messages': result.get('messages', []),
-                    'function_calls': result.get('tool_calls', []),  # Renamed for clarity
-                    'iterations': result.get('iterations', 0)
-                }
+                simplified_result['messages'] = result.get('messages', [])
+
+            result = simplified_result
 
             results.append(result)
 

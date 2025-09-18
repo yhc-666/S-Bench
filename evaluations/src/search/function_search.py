@@ -89,6 +89,7 @@ class FunctionSearchHandler:
         """
         tool_calls = []
 
+        # First check if there are standard tool_calls (for closed source models)
         if 'tool_calls' in response and response['tool_calls']:
             for call in response['tool_calls']:
                 parsed_call = {
@@ -99,6 +100,26 @@ class FunctionSearchHandler:
                     else call['function']['arguments']
                 }
                 tool_calls.append(parsed_call)
+
+        # If no standard tool_calls, try to extract from content (for open source models with XML format)
+        elif 'content' in response and '<tool_call>' in response['content']:
+            import re
+            import uuid
+
+            content = response['content']
+            pattern = r'<tool_call>(.*?)</tool_call>'
+            matches = re.findall(pattern, content, re.DOTALL)
+
+            for match in matches:
+                try:
+                    call_data = json.loads(match.strip())
+                    tool_calls.append({
+                        'id': f'call_{uuid.uuid4().hex[:8]}',
+                        'name': call_data['name'],
+                        'arguments': call_data['arguments']
+                    })
+                except json.JSONDecodeError:
+                    continue
 
         return tool_calls
 

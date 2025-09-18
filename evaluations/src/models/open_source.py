@@ -32,10 +32,11 @@ class VLLMModel(BaseModel):
 
     def generate_with_functions(self, messages: List[Dict[str, str]], tools: List[Dict], **kwargs) -> Dict:
         """Generate response with function/tool calling."""
+        # For open source models, tools are already injected in system prompt
+        # So we don't need to pass them separately
         data = {
             "model": self.model_path,
-            "messages": messages,
-            "tools": tools,
+            "messages": messages,  # Tools already in system prompt
             "max_tokens": kwargs.get('max_tokens', self.max_tokens),
             "temperature": kwargs.get('temperature', self.temperature),
             "stream": False
@@ -50,9 +51,10 @@ class VLLMModel(BaseModel):
                 )
                 response.raise_for_status()
                 result = response.json()['choices'][0]['message']
+
+                # Only return content, tool calls will be extracted from content
                 return {
-                    'content': result.get('content', ''),
-                    'tool_calls': result.get('tool_calls', [])
+                    'content': result.get('content', '')
                 }
             except Exception as e:
                 if retry == 2:

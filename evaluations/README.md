@@ -71,10 +71,23 @@ Data cached in `evaluations/data/` after first download.
 
 ## Results
 
-Saved in `evaluations/results/{model}_{method}_{timestamp}/`:
-- `summary.json`: Overall metrics
-- `{dataset}_results.json`: Detailed results
-- `{dataset}_checkpoint.jsonl`: Resume capability
+Tag-based方式：
+  {
+      'id': str,           # 示例ID
+      'question': str,     # 原始问题
+      'gold_answer': str,  # 标准答案
+      'prediction': str,   # 模型预测
+      'response': str      # 完整响应文本
+  }
+
+  Function-based方式：
+  {
+      'id': str,           # 示例ID
+      'question': str,     # 原始问题  
+      'gold_answer': str,  # 标准答案
+      'prediction': str,   # 模型预测
+      'messages': List     # 完整对话历史
+  }
 
 ## Search Methods
 

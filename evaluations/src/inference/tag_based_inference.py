@@ -58,10 +58,7 @@ class TagBasedInference:
                 answer = self.search_handler.extract_answer(full_response)
                 return {
                     'answer': answer,
-                    'full_response': full_response,
-                    'search_queries': search_queries,
-                    'iterations': iterations,
-                    'trajectory': trajectory_steps
+                    'response': full_response  # Simplified: only keep the full response
                 }
 
             elif reason == "search_needed":
@@ -86,8 +83,5 @@ class TagBasedInference:
         # If no answer found after max iterations
         return {
             'answer': None,
-            'full_response': full_response,
-            'search_queries': search_queries,
-            'iterations': iterations,
-            'trajectory': trajectory_steps
+            'response': full_response  # Simplified: only keep the full response
         }
