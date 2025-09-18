@@ -1,7 +1,7 @@
 # Search engine configuration
 search_engine:
   type: rag_server
-  url: http://localhost:8001/retrieve
+  url: http://localhost:5003/retrieve
   timeout: 30
   max_retries: 3
 

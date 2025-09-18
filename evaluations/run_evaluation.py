@@ -11,7 +11,6 @@ from typing import Dict, Any, List
 import yaml
 from tqdm import tqdm
 
-# Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), ''))
 
 from src.models.closed_source import OpenAIModel, DeepSeekModel

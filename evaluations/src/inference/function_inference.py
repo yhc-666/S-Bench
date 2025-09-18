@@ -1,5 +1,6 @@
 """Function-based inference implementation."""
 
+import json
 from typing import Dict, Any
 from ..search.function_search import FunctionSearchHandler
 
@@ -42,7 +43,6 @@ class FunctionInference:
             system_content = self.prompt_config['system']
 
             if is_open_source and '{{TOOLS_PLACEHOLDER}}' in system_content:
-                import json
                 tools_json = json.dumps(tools, ensure_ascii=False, indent=2)
                 system_content = system_content.replace('{{TOOLS_PLACEHOLDER}}', tools_json)
 

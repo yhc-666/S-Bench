@@ -103,7 +103,6 @@ class FunctionSearchHandler:
 
         # If no standard tool_calls, try to extract from content (for open source models with XML format)
         elif 'content' in response and '<tool_call>' in response['content']:
-            import re
             import uuid
 
             content = response['content']
