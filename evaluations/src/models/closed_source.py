@@ -25,7 +25,7 @@ class OpenAIModel(BaseModel):
             "Content-Type": "application/json"
         }
 
-        # Use chat completions endpoint with messages format
+        # Put everthing in prompt (模仿raw text)
         data = {
             "model": self.model_name,
             "messages": [{"role": "user", "content": prompt}],

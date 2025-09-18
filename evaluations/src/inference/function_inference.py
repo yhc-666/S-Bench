@@ -68,11 +68,20 @@ class FunctionInference:
                 function_calls = self.search_handler.parse_tool_calls(response) # check if <tool_call>...</tool_call> exists in the response
 
                 if function_calls:
-                    # Assistant message only contains content (including XML tool calls inside), 移除tool_calls
-                    messages.append({
-                        "role": "assistant",
-                        "content": response.get('content', '')
-                    })
+                    # Handle assistant message based on model type
+                    if 'tool_calls' in response and response['tool_calls']:
+                        # Closed source models (OpenAI, DeepSeek) - preserve tool_calls field
+                        messages.append({
+                            "role": "assistant",
+                            "content": response.get('content', ''),
+                            "tool_calls": response['tool_calls']
+                        })
+                    else:
+                        # Open source models with XML format - content only
+                        messages.append({
+                            "role": "assistant",
+                            "content": response.get('content', '')
+                        })
 
                     # Execute each function call
                     for call in function_calls:
