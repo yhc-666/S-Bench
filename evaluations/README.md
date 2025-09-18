@@ -47,9 +47,9 @@ bash rag_server/launch.sh
 For open-source models:
 ```bash
 python -m vllm.entrypoints.openai.api_server \
-      --model Qwen/Qwen3-8B \
-      --port 8000 \
-      --served-model-name Qwen/Qwen3-8B
+    --model /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtsearch-assistant/ai-search/deepsearch_files/LLMbasemodels/huggingface.co/Qwen/Qwen3-8B \
+    --port 8000 \
+    --served-model-name qwen3-8b
 ```
 
 ## Run Evaluation
