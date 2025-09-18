@@ -1,28 +1,32 @@
 # Dataset configurations
-active_datasets: [bamboogle] # [nq, popqa, musique, bamboogle]
+active_datasets: [nq, popqa, musique, bamboogle]  # All datasets are now active
 
 datasets:
   nq:
     source: RUC-NLPIR/FlashRAG_datasets
     subset: nq
+    split: test
     test_size: -1  # -1 for full dataset
     metrics: [exact_match, f1]
 
   popqa:
     source: RUC-NLPIR/FlashRAG_datasets
     subset: popqa
+    split: test
     test_size: -1
     metrics: [exact_match, f1]
 
   musique:
     source: RUC-NLPIR/FlashRAG_datasets
     subset: 2wikimultihopqa
+    split: dev  # This dataset only has train and dev splits
     test_size: -1
     metrics: [exact_match, f1]
 
   bamboogle:
     source: RUC-NLPIR/FlashRAG_datasets
     subset: bamboogle
+    split: test
     test_size: -1
     metrics: [exact_match, f1]
 

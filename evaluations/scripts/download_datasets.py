@@ -86,6 +86,7 @@ class DatasetDownloader:
         info = self.get_dataset_info(dataset_name)
         source = info['source']
         subset = info['subset']
+        split = info.get('split', 'test')  # Use split from config, default to 'test'
 
         # Create dataset-specific directory
         dataset_dir = self.cache_dir / subset
@@ -97,14 +98,14 @@ class DatasetDownloader:
             print(f"✓ {dataset_name} already cached at {cache_file}")
             return True
 
-        print(f"\nDownloading {dataset_name} ({subset}) from {source}...")
+        print(f"\nDownloading {dataset_name} ({subset}) from {source} [split: {split}]...")
 
         try:
             # Download dataset
             dataset = load_dataset(
                 source,
                 subset,
-                split='test',
+                split=split,  # Use the split from configuration
                 cache_dir=str(self.hf_cache_dir)
             )
 

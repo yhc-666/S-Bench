@@ -1,4 +1,4 @@
-# Search-R1 Evaluation Framework
+# Evaluation Framework
 
 Evaluate LLMs with two search methods: tag-based (`<search>` tags) and function-based (direct function calls).
 
@@ -20,9 +20,26 @@ export DEEPSEEK_API_KEY="your-key"
 ### 3. Start RAG Server
 
 ```bash
-# In retriever environment
-conda activate retriever
-bash retrieval_launch.sh
+cd current_repo
+pip3 install cachebox
+pip3 install accelerate bitsandbytes datasets deepspeed==0.16.4 einops flash-attn==2.7.0.post2 isort jsonlines loralib optimum packaging peft pynvml>=12.0.0 ray[default]==2.46.0 tensorboard torch==2.6.0 torchmetrics tqdm transformers==4.51.3 transformers_stream_generator wandb wheel
+pip3 install vllm==0.8.5      # Mainly for Qwen3 model support
+pip3 install "qwen-agent[code_interpreter]"
+pip3 install llama_index bs4 pymilvus infinity_client codetiming tensordict==0.6 omegaconf torchdata==0.10.0 hydra-core easydict dill python-multipart mcp==1.9.3
+pip3 install -e . --no-deps
+pip3 install faiss-gpu-cu12   # Optional, needed for end-to-end search model training with rag_server
+pip3 install nvidia-cublas-cu12==12.4.5.8  # Optional, needed while encountering ray worker died issue during training
+
+
+# 指向你自己的目录
+export HF_HOME=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtsearch-assistant/ai-search/yanghaocheng04/hf_home
+export HF_DATASETS_CACHE=$HF_HOME/datasets
+export TRANSFORMERS_CACHE=$HF_HOME/transformers
+export TMPDIR=/mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtsearch-assistant/ai-search/yanghaocheng04/tmp
+
+mkdir -p "$HF_DATASETS_CACHE" "$TRANSFORMERS_CACHE" "$TMPDIR"
+
+bash rag_server/launch.sh
 ```
 
 ### 4. (Optional) Start vLLM Server
@@ -42,13 +59,7 @@ From the **Search-R1 root directory**:
 
 ```bash
 # Tag-based search
-python evaluations/run_evaluation.py --model qwen-7b --method tag
-
-# Function-based search (with specialized search functions)
-python evaluations/run_evaluation.py --model gpt-4 --method function
-
-# Specific datasets
-python evaluations/run_evaluation.py --model gpt-4 --method function --datasets nq popqa
+python evaluations/run_evaluation.py 
 ```
 
 ## Configuration
@@ -106,10 +117,4 @@ Tag-based方式：
 - **Exact Match (EM)**: Exact answer matching
 - **F1 Score**: Token-level overlap
 - **Search Stats**: Queries per question, iterations
-
-## Scripts
-
-- **`scripts/start_vllm.sh <model>`**: Start vLLM server with model from config
-
-Scripts automatically read configurations from `config/*.yaml` files.
 
