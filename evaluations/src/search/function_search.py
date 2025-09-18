@@ -66,8 +66,8 @@ class FunctionSearchHandler:
             original_top_k = self.search_engine.top_k
             self.search_engine.top_k = max_results
 
-            # results = self.search_engine.search(query)
-            results = "This is a placeholder for the search results."
+            results = self.search_engine.search(query)
+            # results = "This is a placeholder for the search results."
 
             # Restore original top_k
             self.search_engine.top_k = original_top_k

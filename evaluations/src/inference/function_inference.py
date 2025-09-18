@@ -1,6 +1,6 @@
 """Function-based inference implementation."""
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 from ..search.function_search import FunctionSearchHandler
 
 
@@ -29,7 +29,7 @@ class FunctionInference:
             question: Input question
 
         Returns:
-            Dictionary containing answer, messages, tool calls, and iterations
+            Dictionary containing answer and messages
         """
         tools = self.search_handler.get_tool_schemas()
 
@@ -56,7 +56,6 @@ class FunctionInference:
             "content": self.prompt_config['user'].format(question=question)
         })
 
-        all_function_calls = []
         iterations = 0
         final_answer = None
 
@@ -88,13 +87,6 @@ class FunctionInference:
                         )
                         messages.append(tool_response)
 
-                        # Track function call for summary (with shortened result)
-                        all_function_calls.append({
-                            'function': function_name,
-                            'arguments': arguments,
-                            'result': result[:200] if len(result) > 200 else result  # Store preview only
-                        })
-
                 else:
                     # No function calls, check for final answer
                     if response.get('content'):
@@ -109,12 +101,10 @@ class FunctionInference:
 
                         # If we have an answer, return results
                         if final_answer:
-                            return self._format_results(
-                                answer=final_answer,
-                                messages=messages,
-                                function_calls=all_function_calls,
-                                iterations=iterations
-                            )
+                            return {
+                                'answer': final_answer,
+                                'messages': messages
+                            }
 
                         # If no answer found but content exists, continue if we haven't reached max iterations
                         if iterations >= self.max_iterations:
@@ -125,12 +115,10 @@ class FunctionInference:
                         # No content and no function calls - something went wrong
                         break
 
-            return self._format_results(
-                answer=final_answer,
-                messages=messages,
-                function_calls=all_function_calls,
-                iterations=iterations
-            )
+            return {
+                'answer': final_answer,
+                'messages': messages
+            }
 
         except Exception as e:
             return {
@@ -139,20 +127,3 @@ class FunctionInference:
                 'messages': messages  # Simplified: only keep messages
             }
 
-    def _format_results(self, answer: Any, messages: List[Dict], function_calls: List[Dict] = None, iterations: int = None) -> Dict[str, Any]:
-        """
-        Format the results for output (simplified).
-
-        Args:
-            answer: Extracted answer
-            messages: Complete message history
-            function_calls: Summary of all function calls (unused in simplified format)
-            iterations: Number of iterations (unused in simplified format)
-
-        Returns:
-            Simplified results dictionary
-        """
-        return {
-            'answer': answer,
-            'messages': messages  # Only keep answer and full message history
-        }

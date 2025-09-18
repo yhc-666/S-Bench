@@ -1,7 +1,6 @@
 """Tag-based inference implementation."""
 
-from typing import Dict, Any, List
-import yaml
+from typing import Dict, Any
 from ..search.tag_search import TagBasedSearch
 
 
@@ -19,10 +18,8 @@ class TagBasedInference:
         # Format initial prompt
         prompt = self.prompt_config['user'].format(question=question)
 
-        search_queries = []
         iterations = 0
         full_response = ""
-        trajectory_steps = []  # Track each step in the trajectory
 
         # Unified approach for all models using generate_with_tags
         while iterations < self.max_iterations:
@@ -43,15 +40,8 @@ class TagBasedInference:
             full_response += response
             prompt += response
 
-            # Add to trajectory
-            trajectory_steps.append({
-                'iteration': iterations,
-                'type': 'generation',
-                'content': response
-            })
-
             # Check if we should continue
-            should_continue, reason = self.search_handler.should_continue(full_response)
+            _, reason = self.search_handler.should_continue(full_response)
 
             if reason == "answer_found":
                 # Extract and return answer
@@ -65,20 +55,11 @@ class TagBasedInference:
                 # Extract query and search
                 query = self.search_handler.extract_search_query(response)
                 if query:
-                    search_queries.append(query)
-                    # results = self.search_handler.search_engine.search(query)
-                    results = "test_placeholder"
+                    results = self.search_handler.search_engine.search(query)
+                    # results = "test_placeholder"
                     search_text = self.search_handler.format_search_results(results)
                     prompt += search_text
                     full_response += search_text
-
-                    # Add search to trajectory
-                    trajectory_steps.append({
-                        'iteration': iterations,
-                        'type': 'search',
-                        'query': query,
-                        'results': search_text
-                    })
 
         # If no answer found after max iterations
         return {
