@@ -1,0 +1,91 @@
+# Search engine configuration
+search_engine:
+  type: rag_server
+  url: http://localhost:8001/retrieve
+  timeout: 30
+  max_retries: 3
+
+  # Search parameters
+  top_k: 3
+  return_scores: true
+
+  # Search method selection
+  search_method: tag  # Options: "tag" or "function"
+
+  # Tag-based search configuration
+  tag_format:
+    search_tag: "<search>"
+    search_close: "</search>"
+    info_tag: "<information>"
+    info_close: "</information>"
+    think_tag: "<think>"
+    think_close: "</think>"
+    answer_tag: "<answer>"
+    answer_close: "</answer>"
+
+  # Function definitions for specialized searches
+  functions:
+    - name: food_search
+      description: Search for food-related information, recipes, ingredients, cuisine
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Food-related search query
+          max_results:
+            type: integer
+            default: 3
+        required: ["query"]
+
+    - name: cloth_search
+      description: Search for clothing, fashion, and apparel information
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Clothing-related search query
+          max_results:
+            type: integer
+            default: 3
+        required: ["query"]
+
+    - name: people_search
+      description: Search for information about people, biographies, profiles
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Person name or related query
+          max_results:
+            type: integer
+            default: 3
+        required: ["query"]
+
+    - name: location_search
+      description: Search for geographical locations, places, landmarks
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Location-related search query
+          max_results:
+            type: integer
+            default: 3
+        required: ["query"]
+
+    - name: general_search
+      description: General purpose information search
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Search query
+          max_results:
+            type: integer
+            default: 3
+        required: ["query"]

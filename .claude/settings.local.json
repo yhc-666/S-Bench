@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Read(//Users/haochengyang/Desktop/**)",
+      "Bash(cd:*)",
+      "Bash(python:*)",
+      "Bash(conda activate:*)",
+      "Bash(source:*)",
+      "Bash(/opt/miniconda3/bin/conda info:*)",
+      "Bash(/opt/miniconda3/envs/mcp/bin/pip install tqdm pyyaml requests fastmcp)",
+      "Bash(/opt/miniconda3/envs/mcp/bin/pip install:*)",
+      "Bash(/opt/miniconda3/envs/mcp/bin/python:*)",
+      "WebSearch",
+      "WebFetch(domain:api-docs.deepseek.com)",
+      "Bash(for:*)",
+      "Bash(do echo \"=== $dir ===\")",
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(timeout:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

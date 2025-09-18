@@ -1,0 +1,8 @@
+{
+  "model": "gpt-4",
+  "method": "function",
+  "datasets": [
+    "bamboogle"
+  ],
+  "timestamp": "20250918_104723"
+}

@@ -1,0 +1,40 @@
+# Prompt templates
+prompts:
+  tag_based:
+    system: ""
+    user: |
+      Answer the given question. You must conduct reasoning inside <think> and </think> first every time you get new information. After reasoning, if you find you lack some knowledge, you can call a search engine by <search> query </search> and it will return the top searched results between <information> and </information>. You can search as many times as your want. If you find no further external knowledge needed, you can directly provide the answer inside <answer> and </answer>, without detailed illustrations. For example, <answer> Beijing </answer>. Question: {question}
+
+  function_based:
+    system: |
+      You are a helpful assistant with access to specialized search functions. You have access to:
+      - food_search: For food, recipes, and cuisine information
+      - cloth_search: For clothing and fashion information
+      - people_search: For information about people and biographies
+      - location_search: For geographical and place information
+      - general_search: For any other information
+
+      Choose the most appropriate search function based on the question. Think step-by-step about what information you need before searching.
+    user: |
+      Answer the following question. Use the appropriate search function(s) to gather necessary information. You can use multiple functions if needed. Provide your final answer inside <answer> and </answer> tags. For example, <answer>Beijing</answer>.
+
+      Question: {question}
+
+# Answer extraction patterns
+answer_extraction:
+  tag_based:
+    pattern: "<answer>(.*?)</answer>"
+    backup_patterns:
+      - "(?:answer is|answer:|final answer:)\\s*(.+?)(?:\\.|$)"
+
+  function_based:
+    pattern: "<answer>(.*?)</answer>"
+
+# Search query extraction
+search_extraction:
+  pattern: "<search>(.*?)</search>"
+  max_query_length: 500
+
+# Information insertion template
+information_template: |
+  <information>{search_results}</information>
