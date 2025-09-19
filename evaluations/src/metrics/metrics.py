@@ -86,19 +86,16 @@ def extract_search_stats(item: Dict[str, Any]) -> tuple:
         messages = item['messages']
         # Count tool responses (each tool response = one search)
         search_count = sum(1 for m in messages if m.get('role') == 'tool')
-        # Count iterations (assistant messages with tool calls)
-        iteration_count = sum(1 for m in messages
-                            if m.get('role') == 'assistant'
-                            and m.get('content') is not None
-                            and '<tool_call>' in m.get('content', ''))
+        # Count iterations (all assistant messages = reasoning iterations)
+        iteration_count = sum(1 for m in messages if m.get('role') == 'assistant')
 
     elif 'response' in item:
         # Tag-based: extract from response
         response = item.get('response', '')
         # Count search tags
         search_count = len(re.findall(r'<search>.*?</search>', response, re.DOTALL))
-        # For tag-based, iterations roughly equal to search count
-        iteration_count = max(1, search_count) if search_count > 0 else 0
+        # For tag-based, iterations = search count + 1 (final answer generation)
+        iteration_count = search_count + 1
 
     return search_count, iteration_count
 
@@ -168,7 +165,6 @@ def main():
     """Main function to recalculate metrics from existing results."""
     import argparse
     import json
-    import os
 
     parser = argparse.ArgumentParser(description='Recalculate metrics from evaluation results')
     parser.add_argument('result_file', help='Path to the result JSON file')
