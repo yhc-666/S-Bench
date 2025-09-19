@@ -10,7 +10,7 @@ Evaluate LLMs with two search methods: tag-based (`<search>` tags) and function-
 pip install -r evaluations/requirements.txt
 ```
 
-## 2. Configuration
+### 2. Configuration
 
 All configs in `evaluations/config/`:
 - **models.yaml**: Set `active_model` and API keys
@@ -73,7 +73,7 @@ python evaluations/run_evaluation.py
 Data cached in `evaluations/data/` after first download.
 
 ## Results
-
+```bash
 Tag-based方式：
   {
       'id': str,           # 示例ID
@@ -91,7 +91,7 @@ Tag-based方式：
       'prediction': str,   # 模型预测
       'messages': List     # 完整对话历史
   }
-
+```
 ## Search Methods
 
 ### Tag-based
