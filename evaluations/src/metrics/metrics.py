@@ -74,7 +74,13 @@ def calculate_metrics(results: List[Dict[str, Any]], metrics_list: List[str]) ->
 
     for item in results:
         prediction = item.get('prediction', '')
+        # Support both ground_truths (list) and gold_answer (string) fields
         ground_truths = item.get('ground_truths', [])
+        if not ground_truths and 'gold_answer' in item:
+            # Convert single gold_answer to list format
+            gold_answer = item.get('gold_answer', '')
+            if gold_answer:
+                ground_truths = [gold_answer]
 
         for metric in metrics_list:
             if metric == 'exact_match':
@@ -99,3 +105,66 @@ def calculate_metrics(results: List[Dict[str, Any]], metrics_list: List[str]) ->
     avg_metrics['avg_iterations'] = sum(iterations) / len(iterations) if iterations else 0.0
 
     return avg_metrics
+
+
+def main():
+    """Main function to recalculate metrics from existing results."""
+    import argparse
+    import json
+    import os
+
+    parser = argparse.ArgumentParser(description='Recalculate metrics from evaluation results')
+    parser.add_argument('result_file', help='Path to the result JSON file')
+    parser.add_argument('--metrics', nargs='+', default=['exact_match', 'f1'],
+                       help='Metrics to calculate (default: exact_match f1)')
+    parser.add_argument('--output', help='Output file path (default: update original file)')
+    parser.add_argument('--print', action='store_true', help='Print metrics to console')
+
+    args = parser.parse_args()
+
+    # Load results
+    print(f"Loading results from: {args.result_file}")
+    with open(args.result_file, 'r') as f:
+        data = json.load(f)
+
+    # Get results list
+    if 'results' in data:
+        results = data['results']
+    else:
+        # Assume the file is a list of results
+        results = data if isinstance(data, list) else [data]
+
+    # Calculate metrics
+    print(f"Calculating metrics: {args.metrics}")
+    metrics = calculate_metrics(results, args.metrics)
+
+    # Print metrics
+    if args.print or not args.output:
+        print("\nMetrics:")
+        print("=" * 40)
+        for metric, value in metrics.items():
+            print(f"{metric:20s}: {value:.4f}")
+
+    # Update or save file
+    if args.output:
+        output_file = args.output
+    else:
+        output_file = args.result_file
+
+    if 'results' in data:
+        # Update metrics in the original structure
+        data['metrics'] = metrics
+        with open(output_file, 'w') as f:
+            json.dump(data, f, indent=2)
+        print(f"\nUpdated metrics in: {output_file}")
+    elif args.output:
+        # Save only metrics to new file
+        with open(output_file, 'w') as f:
+            json.dump(metrics, f, indent=2)
+        print(f"\nSaved metrics to: {output_file}")
+
+    return metrics
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,13 @@
+{
+  "model": "qwen3-8b",
+  "method": "function",
+  "timestamp": "20250920_023635",
+  "results": {
+    "bamboogle": {
+      "exact_match": 0.0,
+      "f1": 0.0,
+      "avg_searches": 0.0,
+      "avg_iterations": 0.0
+    }
+  }
+}

@@ -1,8 +1,8 @@
 {
-  "model": "gpt-4",
+  "model": "qwen3-8b",
   "method": "function",
   "datasets": [
     "bamboogle"
   ],
-  "timestamp": "20250918_104723"
+  "timestamp": "20250920_023635"
 }

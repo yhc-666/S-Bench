@@ -62,6 +62,18 @@ From the **root directory**:
 python evaluations/run_evaluation.py 
 ```
 
+## Recalculate Metrics
+
+After evaluation completes, you can recalculate metrics independently:
+
+```bash
+# Recalculate and update metrics in-place
+python evaluations/src/metrics/metrics.py evaluations/results/gpt-4_function_20250918_104723/bamboogle_results.json
+
+# Print metrics without updating file
+python evaluations/src/metrics/metrics.py evaluations/results/gpt-4_function_20250918_104723/bamboogle_results.json --print
+```
+
 
 ## Datasets
 
@@ -86,12 +98,13 @@ Tag-based方式：
   Function-based方式：
   {
       'id': str,           # 示例ID
-      'question': str,     # 原始问题  
+      'question': str,     # 原始问题
       'gold_answer': str,  # 标准答案
       'prediction': str,   # 模型预测
       'messages': List     # 完整对话历史
   }
 ```
+
 ## Search Methods
 
 ### Tag-based

@@ -5,8 +5,8 @@ active_model: qwen3-8b  # Change to: gpt-4, deepseek, qwen3-8b, llama-8b
 models:
   gpt-4:
     type: closed_source
-    api_key: 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
-    endpoint: https://api.openai.com/v1/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
+    api_key: 1783462889744248849
+    endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
     model_name: gpt-4o-2024-08-06
     max_tokens: 2048
     temperature: 0.7
