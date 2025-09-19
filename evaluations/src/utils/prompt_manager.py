@@ -15,7 +15,6 @@ class PromptManager:
         """Get formatted prompt for a model and search method."""
         method_key = f"{search_method}_based"
 
-        # Check for model-specific override
         if model_name in self.config.get("model_specific", {}):
             if method_key in self.config["model_specific"][model_name]:
                 prompt_template = self.config["model_specific"][model_name][method_key]
@@ -24,7 +23,6 @@ class PromptManager:
         else:
             prompt_template = self.config["prompts"][method_key]
 
-        # Format the prompt
         formatted = {}
         if prompt_template.get("system"):
             formatted["system"] = prompt_template["system"]

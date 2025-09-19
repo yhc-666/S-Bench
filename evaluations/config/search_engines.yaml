@@ -9,10 +9,8 @@ search_engine:
   top_k: 3
   return_scores: true
 
-  # Search method selection
   search_method: tag  # Options: "tag" or "function"
 
-  # Tag-based search configuration
   tag_format:
     search_tag: "<search>"
     search_close: "</search>"
@@ -23,69 +21,509 @@ search_engine:
     answer_tag: "<answer>"
     answer_close: "</answer>"
 
-  # Function definitions for specialized searches
   functions:
-    - name: food_search
-      description: Search for food-related information, recipes, ingredients, cuisine
+    - name: person_information_search
+      description: Personal information search tool. Specialized for querying basic identity information, biographical data, family relationships, educational background, and career history of individuals.
       parameters:
         type: object
         properties:
           query:
             type: string
-            description: Food-related search query
-          max_results:
-            type: integer
-            default: 3
-        required: ["query"]
+            description: Specific query content, such as 'Einstein's birthplace and education', 'Steve Jobs family members', 'Shakespeare's life experiences'
+          person_identifiers:
+            type: array
+            items:
+              type: string
+            description: Person identifiers including names, aliases, titles, such as ['Albert Einstein', 'Father of Relativity']
+          info_categories:
+            type: array
+            items:
+              type: string
+            description: Optional, information categories such as ['basic information', 'education history', 'career history', 'family relations', 'personal characteristics']
+          life_periods:
+            type: array
+            items:
+              type: string
+            description: Optional, life stages such as ['childhood', 'education period', 'career', 'later life']
+        required: ["query", "person_identifiers"]
 
-    - name: cloth_search
-      description: Search for clothing, fashion, and apparel information
+    - name: creation_information_search
+      description: Creative work information search tool. Specialized for querying content, plot, themes, technical specifications, and artistic features of various creative works including literature, films, music, art, games, and magazines.
       parameters:
         type: object
         properties:
           query:
             type: string
-            description: Clothing-related search query
-          max_results:
-            type: integer
-            default: 3
-        required: ["query"]
+            description: Specific query content, such as 'main plot of Harry Potter', 'artistic features of Mona Lisa', 'musical structure of Symphony No. 9'
+          work_identifiers:
+            type: array
+            items:
+              type: string
+            description: Work identifiers, such as ['Harry Potter', 'Harry Potter series']
+          content_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, content aspects such as ['plot content', 'themes', 'artistic techniques', 'technical specifications', 'style features']
+          work_formats:
+            type: array
+            items:
+              type: string
+            description: Optional, work formats such as ['novel', 'film', 'music', 'painting', 'sculpture', 'game']
+        required: ["query", "work_identifiers"]
 
-    - name: people_search
-      description: Search for information about people, biographies, profiles
+    - name: historical_event_information_search
+      description: Historical event information search tool. Specialized for querying time, location, process, participants, results, and impacts of specific historical events including political events, military conflicts, social movements, natural disasters, and important conferences.
       parameters:
         type: object
         properties:
           query:
             type: string
-            description: Person name or related query
-          max_results:
-            type: integer
-            default: 3
-        required: ["query"]
+            description: Specific query content, such as 'detailed process of D-Day Normandy landing', '2008 Wenchuan earthquake rescue operations', 'Fall of Berlin Wall event'
+          event_identifiers:
+            type: array
+            items:
+              type: string
+            description: Event identifiers, such as ['Normandy Landing', 'D-Day', 'Operation Overlord']
+          event_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, event aspects such as ['event background', 'process', 'participants', 'direct results', 'historical impact']
+          temporal_context:
+            type: string
+            description: Optional, temporal context such as 'World War II period', 'Cold War era', '20th century'
+          geographic_scope:
+            type: string
+            description: Optional, geographic scope such as 'European theater', 'global impact', 'regional event'
+        required: ["query", "event_identifiers"]
 
-    - name: location_search
-      description: Search for geographical locations, places, landmarks
+    - name: geographic_information_search
+      description: Geographic information search tool. Specialized for querying location, features, and attributes of geographic entities including countries, cities, regions, landmarks, natural features, and various entities (companies, institutions, buildings) with their coordinates, area, terrain, climate, and demographic data.
       parameters:
         type: object
         properties:
           query:
             type: string
-            description: Location-related search query
-          max_results:
-            type: integer
-            default: 3
-        required: ["query"]
+            description: Specific query content, such as 'Mount Everest height and location', 'Paris area and population', 'Amazon River length and basin'
+          location_identifiers:
+            type: array
+            items:
+              type: string
+            description: Geographic identifiers, such as ['Mount Everest', 'World's highest peak']
+          geographic_types:
+            type: array
+            items:
+              type: string
+            description: Optional, geographic types such as ['mountain', 'city', 'river', 'country', 'continent', 'ocean']
+          info_dimensions:
+            type: array
+            items:
+              type: string
+            description: Optional, information dimensions such as ['location coordinates', 'area size', 'terrain features', 'climate conditions', 'population data']
+        required: ["query", "location_identifiers"]
 
-    - name: general_search
-      description: General purpose information search
+    - name: scientific_information_search
+      description: Scientific information search tool. Specialized for querying scientific theories, concepts, laws, and principles including physics laws, chemistry principles, biological mechanisms, and mathematical concepts with their definitions, principles, and applications.
       parameters:
         type: object
         properties:
           query:
             type: string
-            description: Search query
-          max_results:
-            type: integer
-            default: 3
+            description: Specific query content, such as 'basic principles of quantum entanglement', 'biological mechanism of DNA replication', 'core concepts of relativity'
+          concept_identifiers:
+            type: array
+            items:
+              type: string
+            description: Concept identifiers, such as ['quantum entanglement', 'quantum physics phenomenon']
+          scientific_fields:
+            type: array
+            items:
+              type: string
+            description: Optional, scientific fields such as ['quantum physics', 'molecular biology', 'theoretical physics', 'organic chemistry']
+          concept_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, concept aspects such as ['basic definition', 'working principle', 'theoretical foundation', 'mathematical expression', 'application areas']
+        required: ["query", "concept_identifiers"]
+
+    - name: academic_research_search
+      description: Academic research search tool. Specialized for querying academic papers, research reports, conferences, and journal publications including research methods, experimental results, academic viewpoints, citations, and publication details.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'latest deep learning research in medical imaging', 'important climate change papers in Nature', 'original BERT model paper'
+          research_identifiers:
+            type: array
+            items:
+              type: string
+            description: Research identifiers, such as ['BERT', 'Transformer', 'attention mechanism']
+          academic_venues:
+            type: array
+            items:
+              type: string
+            description: Optional, academic venues such as ['Nature', 'Science', 'NIPS', 'ICML', 'top journals']
+          research_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, research aspects such as ['research methods', 'experimental results', 'theoretical contributions', 'citation impact', 'application value']
+          publication_timeframe:
+            type: string
+            description: Optional, publication timeframe such as 'last five years', 'after 2020', 'since 21st century'
+        required: ["query", "research_identifiers"]
+
+    - name: legal_information_search
+      description: Legal information search tool. Specialized for querying legal provisions, policies, regulations, judicial interpretations, and administrative rules including their specific content, scope of application, legal effect, and implementation details of international, national, and local laws.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'Chapter 3 provisions of Personal Information Protection Law', 'GDPR data processing regulations', 'Labor Law provisions on working hours'
+          legal_identifiers:
+            type: array
+            items:
+              type: string
+            description: Legal identifiers, such as ['Personal Information Protection Law', 'GDPR', 'Data Protection Regulation']
+          legal_categories:
+            type: array
+            items:
+              type: string
+            description: Optional, legal categories such as ['civil law', 'criminal law', 'administrative law', 'international law', 'commercial law']
+          policy_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, policy aspects such as ['legal provisions', 'scope of application', 'legal responsibilities', 'implementation rules', 'enforcement standards']
+          jurisdiction:
+            type: string
+            description: Optional, jurisdiction such as 'People's Republic of China', 'European Union', 'international treaties'
+        required: ["query", "legal_identifiers"]
+
+    - name: economic_information_search
+      description: Economic information search tool. Specialized for querying economic indicators, financial data, market information, monetary policies, and investment data including GDP, inflation rates, exchange rates, stock prices, interest rates, and various economic and financial statistics.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as '2023 China GDP growth rate', 'USD to CNY exchange rate trends', 'S&P 500 index historical data'
+          financial_indicators:
+            type: array
+            items:
+              type: string
+            description: Financial indicators, such as ['GDP', 'inflation rate', 'exchange rate', 'stock index', 'interest rate']
+          market_segments:
+            type: array
+            items:
+              type: string
+            description: Optional, market segments such as ['stock market', 'bond market', 'forex market', 'commodity market']
+          geographic_markets:
+            type: array
+            items:
+              type: string
+            description: Optional, geographic markets such as ['Chinese market', 'US market', 'global market', 'emerging markets']
+          data_timeframe:
+            type: string
+            description: Optional, data timeframe such as 'real-time data', 'historical data', 'annual statistics'
+        required: ["query", "financial_indicators"]
+
+    - name: medical_information_search
+      description: Medical information search tool. Specialized for querying disease information, symptom diagnosis, treatment methods, drug information, medical procedures, and health data including disease mechanisms, treatment guidelines, drug effects, and prevention measures.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'COVID-19 transmission mechanism and symptoms', 'diabetes treatment methods', 'aspirin drug mechanism'
+          medical_terms:
+            type: array
+            items:
+              type: string
+            description: Medical terms, such as ['COVID-19', 'coronavirus', 'SARS-CoV-2']
+          medical_categories:
+            type: array
+            items:
+              type: string
+            description: Optional, medical categories such as ['infectious diseases', 'chronic diseases', 'genetic diseases', 'cardiovascular diseases']
+          information_types:
+            type: array
+            items:
+              type: string
+            description: Optional, information types such as ['disease mechanism', 'symptoms', 'diagnosis methods', 'treatment plans', 'prevention measures']
+          evidence_level:
+            type: string
+            description: Optional, evidence level such as 'clinical guidelines', 'evidence-based medicine', 'expert consensus'
+        required: ["query", "medical_terms"]
+
+    - name: tradition_cultural_information_search
+      description: Traditional culture information search tool. Specialized for querying cultural customs, traditional festivals, ethnic cultures, cultural symbols, and traditional crafts including their specific content, cultural connotations, celebration ceremonies, and cultural significance.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'traditional customs and cultural significance of Spring Festival', 'ceremonial procedures of Japanese tea ceremony', 'celebration methods of Indian Diwali'
+          cultural_identifiers:
+            type: array
+            items:
+              type: string
+            description: Cultural identifiers, such as ['Spring Festival', 'Chinese New Year']
+          cultural_types:
+            type: array
+            items:
+              type: string
+            description: Optional, cultural types such as ['traditional festivals', 'religious ceremonies', 'ethnic customs', 'traditional crafts']
+          cultural_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, cultural aspects such as ['historical origin', 'cultural connotation', 'ceremonial procedures', 'symbolic meaning', 'modern inheritance']
+          cultural_regions:
+            type: string
+            description: Optional, cultural regions such as 'East Asian culture', 'Islamic culture', 'Western culture'
+        required: ["query", "cultural_identifiers"]
+
+    - name: environmental_information_search
+      description: Environmental information search tool. Specialized for querying environmental conditions, ecosystems, climate data, environmental monitoring, biodiversity, and pollution indicators including environmental measurements, ecological indicators, climate statistics, and conservation status.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'Amazon rainforest biodiversity data', 'global average temperature change trends', 'Beijing air quality index'
+          environmental_indicators:
+            type: array
+            items:
+              type: string
+            description: Environmental indicators, such as ['biodiversity', 'temperature change', 'air quality', 'water quality']
+          ecological_systems:
+            type: array
+            items:
+              type: string
+            description: Optional, ecological systems such as ['tropical rainforest', 'marine ecosystem', 'wetland ecosystem', 'urban ecosystem']
+          measurement_types:
+            type: array
+            items:
+              type: string
+            description: Optional, measurement types such as ['temperature data', 'precipitation', 'pollution concentration', 'species count', 'forest coverage']
+          spatial_scope:
+            type: string
+            description: Optional, spatial scope such as 'global scale', 'regional', 'national level', 'city level'
+        required: ["query", "environmental_indicators"]
+
+    - name: sports_information_search
+      description: Sports information search tool. Specialized for querying sports competitions, match results, athletic records, game statistics, schedules, and sports rules including scores, historical records, rankings, and event organization.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as '2022 World Cup final result', 'men's 100m world record', 'NBA Finals historical data'
+          sports_identifiers:
+            type: array
+            items:
+              type: string
+            description: Sports identifiers, such as ['World Cup', 'FIFA World Cup', 'Football World Cup']
+          competition_levels:
+            type: array
+            items:
+              type: string
+            description: Optional, competition levels such as ['Olympics', 'World Championships', 'professional leagues', 'international competitions']
+          data_categories:
+            type: array
+            items:
+              type: string
+            description: Optional, data categories such as ['match results', 'historical records', 'statistics', 'rankings', 'schedules']
+          temporal_scope:
+            type: string
+            description: Optional, temporal scope such as '2022', 'last decade', 'historical records'
+        required: ["query", "sports_identifiers"]
+
+    - name: transportation_information_search
+      description: Transportation information search tool. Specialized for querying transportation networks, transport systems, infrastructure, transport technology, and planning including routes, capacity, infrastructure, and technical standards.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'China high-speed rail network layout', 'Beijing subway system map', 'global aviation transport network'
+          transport_identifiers:
+            type: array
+            items:
+              type: string
+            description: Transport identifiers, such as ['high-speed rail', 'subway system', 'aviation network', 'highway network']
+          transport_modes:
+            type: array
+            items:
+              type: string
+            description: Optional, transport modes such as ['rail transport', 'road transport', 'air transport', 'water transport']
+          system_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, system aspects such as ['network layout', 'technical standards', 'transport capacity', 'infrastructure', 'planning design']
+          geographic_coverage:
+            type: string
+            description: Optional, geographic coverage such as 'national network', 'urban internal', 'regional connections', 'international transport'
+        required: ["query", "transport_identifiers"]
+
+    - name: education_information_search
+      description: Education information search tool. Specialized for querying educational systems, teaching systems, curricula, education policies, learning methods, and education assessment including educational structures, teaching methods, evaluation systems, and educational standards.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'characteristics of Finnish education system', 'Chinese Gaokao system', 'US university application system'
+          education_identifiers:
+            type: array
+            items:
+              type: string
+            description: Education identifiers, such as ['Finnish education', 'Chinese Gaokao', 'SAT exam']
+          education_levels:
+            type: array
+            items:
+              type: string
+            description: Optional, education levels such as ['basic education', 'higher education', 'vocational education', 'continuing education']
+          system_components:
+            type: array
+            items:
+              type: string
+            description: Optional, system components such as ['curriculum system', 'evaluation system', 'teaching methods', 'management system', 'policies and regulations']
+          educational_context:
+            type: string
+            description: Optional, educational context such as 'national education system', 'international education standards', 'regional education features'
+        required: ["query", "education_identifiers"]
+
+    - name: lifestyle_service_information_search
+      description: Lifestyle service information search tool. Specialized for querying daily life services, consumer information, life guides, service reviews, and practical information including dining, shopping, tourism, accommodation, and other practical life services.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'most popular Sichuan restaurants in Beijing', 'museums worth visiting in Paris', 'how to apply for a passport'
+          service_categories:
+            type: array
+            items:
+              type: string
+            description: Service categories, such as ['dining services', 'travel services', 'shopping services', 'life services']
+          service_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, service aspects such as ['service quality', 'price information', 'user reviews', 'service process', 'usage guide']
+          geographic_area:
+            type: string
+            description: Optional, geographic area such as 'Beijing', 'Shanghai', 'nationwide'
+          target_audience:
+            type: string
+            description: Optional, target audience such as 'tourists', 'local residents', 'business people'
+        required: ["query", "service_categories"]
+
+    - name: military_information_search
+      description: Military information search tool. Specialized for querying military equipment, weapon systems, military technology, and defense equipment including specifications, technical parameters, combat performance, and development history of publicly available military technical information.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'F-22 fighter technical parameters', 'basic structure of aircraft carriers', 'working principle of missile defense systems'
+          equipment_identifiers:
+            type: array
+            items:
+              type: string
+            description: Equipment identifiers, such as ['F-22', 'Raptor fighter', 'fifth-generation fighter']
+          equipment_categories:
+            type: array
+            items:
+              type: string
+            description: Optional, equipment categories such as ['fighter jets', 'tanks', 'warships', 'missile systems', 'radar systems']
+          technical_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, technical aspects such as ['performance parameters', 'technical specifications', 'combat capabilities', 'design features', 'development history']
+        required: ["query", "equipment_identifiers"]
+
+    - name: religious_information_search
+      description: Religious and philosophical information search tool. Specialized for querying religious doctrines, philosophical theories, intellectual movements, spiritual culture, and philosophical concepts including religious classics, philosophical viewpoints, thought systems, and spiritual concepts.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'Buddhist Four Noble Truths doctrine', 'core views of existentialism', 'Confucian concept of benevolence'
+          thought_identifiers:
+            type: array
+            items:
+              type: string
+            description: Thought identifiers, such as ['Four Noble Truths', 'existentialism', 'benevolence']
+          intellectual_categories:
+            type: array
+            items:
+              type: string
+            description: Optional, intellectual categories such as ['religious doctrine', 'philosophical theory', 'ethical thought', 'political philosophy']
+          thought_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, thought aspects such as ['core views', 'theoretical foundation', 'practical application', 'historical development', 'modern significance']
+          cultural_context:
+            type: string
+            description: Optional, cultural context such as 'Eastern philosophy', 'Western philosophy', 'religious tradition'
+        required: ["query", "thought_identifiers"]
+
+    - name: politics_information_search
+      description: Political information search tool. Specialized for querying political systems, political relations, government structures, and party information including political regimes, party relations, election results, administrative divisions, national relations, and power structures.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: Specific query content, such as 'US separation of powers structure', 'major political parties in China', '2020 US election results'
+          country_or_region:
+            type: string
+            description: Country or region name, such as 'United States', 'China', 'European Union'
+          political_entities:
+            type: array
+            items:
+              type: string
+            description: Optional, political entities involved, such as ['Communist Party of China', 'Democratic Party', 'United Nations']
+          structure_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, structure aspects such as ['government institutions', 'party relations', 'election system', 'power distribution', 'administrative divisions']
+          time_period:
+            type: string
+            description: Optional, time period such as '2020', 'Cold War era', 'current system'
+        required: ["query", "country_or_region"]
+
+    - name: general_information_search
+      description: General information search tool. Fallback search tool for queries that don't fit any specialized tool's description scope, or when queries are difficult to categorize. Handles comprehensive queries, fuzzy queries, emerging topics, real-time information, and other information needs not covered by specialized tools. Suitable for exploratory and open-ended questions.
+      parameters:
+        type: object
+        properties:
+          query:
+            type: string
+            description: User's original query content, maintaining query integrity and original expression, such as 'recent interesting tech news', 'how to learn a new language', 'AI impact on society'
+          search_context:
+            type: array
+            items:
+              type: string
+            description: Optional, search context information to help understand query background, such as ['real-time information', 'comprehensive analysis', 'cross-domain', 'emerging topics']
+          information_scope:
+            type: string
+            description: Optional, information scope preference such as 'comprehensive coverage', 'key highlights', 'real-time priority', 'authoritative sources'
+          excluded_aspects:
+            type: array
+            items:
+              type: string
+            description: Optional, information aspects to exclude to avoid duplication with other specialized tools, such as ['no technical parameters needed', 'no historical background needed']
         required: ["query"]

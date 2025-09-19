@@ -56,21 +56,33 @@ class FunctionSearchHandler:
         if name not in self.functions:
             return f"Error: Unknown function '{name}'. Available functions: {list(self.functions.keys())}"
 
-        # Extract query and max_results
-        query = arguments.get('query', '')
-        max_results = arguments.get('max_results', self.config.get('top_k', 3))
+        # Extract query and format all arguments as search query
+        """
+        例如，对于以下工具调用：
+        arguments = {
+            "query": "Einstein's birthplace and education",
+            "person_identifiers": ["Albert Einstein", "Father of Relativity"],
+            "info_categories": ["basic information", "education history"]
+        }
+        将生成搜索查询：
+        query: Einstein's birthplace and education
+        person_identifiers: Albert Einstein, Father of Relativity
+        info_categories: basic information, education history
+        """
+        query_parts = []
+        for param_name, param_value in arguments.items():
+            if param_value is not None:
+                if isinstance(param_value, list):
+                    formatted_value = ', '.join(str(item) for item in param_value)
+                else:
+                    formatted_value = str(param_value)
+                query_parts.append(f"{param_name}: {formatted_value}")
 
-        # Execute search with enhanced query
+        query = '\n'.join(query_parts) if query_parts else ''
+
         try:
-            # Temporarily override top_k for this search
-            original_top_k = self.search_engine.top_k
-            self.search_engine.top_k = max_results
-
             results = self.search_engine.search(query)
             # results = "This is a placeholder for the search results."
-
-            # Restore original top_k
-            self.search_engine.top_k = original_top_k
 
             return results
         except Exception as e:
@@ -149,7 +161,6 @@ class FunctionSearchHandler:
         Returns:
             Extracted answer or None if not found
         """
-        # Look for <answer> tags
         answer_pattern = r'<answer>(.*?)</answer>'
         match = re.search(answer_pattern, text, re.DOTALL | re.IGNORECASE)
 

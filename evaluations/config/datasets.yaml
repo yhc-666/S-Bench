@@ -19,7 +19,7 @@ datasets:
   musique:
     source: RUC-NLPIR/FlashRAG_datasets
     subset: 2wikimultihopqa
-    split: dev  # This dataset only has train and dev splits
+    split: dev  # This dataset 只有 train and dev splits
     test_size: -1
     metrics: [exact_match, f1]
 

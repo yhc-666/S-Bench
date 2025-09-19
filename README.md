@@ -10,12 +10,13 @@ Evaluate LLMs with two search methods: tag-based (`<search>` tags) and function-
 pip install -r evaluations/requirements.txt
 ```
 
-### 2. Set API Keys
+## 2. Configuration
 
-```bash
-export OPENAI_API_KEY="your-key"
-export DEEPSEEK_API_KEY="your-key"
-```
+All configs in `evaluations/config/`:
+- **models.yaml**: Set `active_model` and API keys
+- **datasets.yaml**: Set `active_datasets`
+- **search_engines.yaml**: Set `search_method` (tag/function)
+- **prompts.yaml**: Customize prompts
 
 ### 3. Start RAG Server
 
@@ -46,7 +47,7 @@ bash rag_server/launch.sh
 
 For open-source models:
 ```bash
-python -m vllm.entrypoints.openai.api_server \
+python3 -m vllm.entrypoints.openai.api_server \
     --model /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtsearch-assistant/ai-search/deepsearch_files/LLMbasemodels/huggingface.co/Qwen/Qwen3-8B \
     --port 8000 \
     --served-model-name qwen3-8b
@@ -54,21 +55,13 @@ python -m vllm.entrypoints.openai.api_server \
 
 ## Run Evaluation
 
-From the **Search-R1 root directory**:
+From the **root directory**:
 
 ```bash
 # Tag-based search
 python evaluations/run_evaluation.py 
 ```
 
-## Configuration
-
-All configs in `evaluations/config/`:
-
-- **models.yaml**: Set `active_model` and API keys
-- **datasets.yaml**: Set `active_datasets`
-- **search_engines.yaml**: Set `search_method` (tag/function)
-- **prompts.yaml**: Customize prompts
 
 ## Datasets
 
