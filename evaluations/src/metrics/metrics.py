@@ -89,6 +89,7 @@ def extract_search_stats(item: Dict[str, Any]) -> tuple:
         # Count iterations (assistant messages with tool calls)
         iteration_count = sum(1 for m in messages
                             if m.get('role') == 'assistant'
+                            and m.get('content') is not None
                             and '<tool_call>' in m.get('content', ''))
 
     elif 'response' in item:
