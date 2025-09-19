@@ -68,6 +68,40 @@ def f1_score(prediction: str, ground_truths: List[str]) -> float:
     return max(scores) if scores else 0.0
 
 
+def extract_search_stats(item: Dict[str, Any]) -> tuple:
+    """
+    Extract search statistics from messages or response.
+
+    Args:
+        item: Result item containing either messages or response
+
+    Returns:
+        Tuple of (search_count, iteration_count)
+    """
+    search_count = 0
+    iteration_count = 0
+
+    if 'messages' in item:
+        # Function-based: extract from messages
+        messages = item['messages']
+        # Count tool responses (each tool response = one search)
+        search_count = sum(1 for m in messages if m.get('role') == 'tool')
+        # Count iterations (assistant messages with tool calls)
+        iteration_count = sum(1 for m in messages
+                            if m.get('role') == 'assistant'
+                            and '<tool_call>' in m.get('content', ''))
+
+    elif 'response' in item:
+        # Tag-based: extract from response
+        response = item.get('response', '')
+        # Count search tags
+        search_count = len(re.findall(r'<search>.*?</search>', response, re.DOTALL))
+        # For tag-based, iterations roughly equal to search count
+        iteration_count = max(1, search_count) if search_count > 0 else 0
+
+    return search_count, iteration_count
+
+
 def calculate_metrics(results: List[Dict[str, Any]], metrics_list: List[str]) -> Dict[str, float]:
     """Calculate all metrics for results."""
     metrics_results = {metric: [] for metric in metrics_list}
@@ -98,11 +132,33 @@ def calculate_metrics(results: List[Dict[str, Any]], metrics_list: List[str]) ->
         avg_metrics[metric] = sum(scores) / len(scores) if scores else 0.0
 
     # Add search statistics
-    search_queries = [len(item.get('search_queries', [])) for item in results]
-    iterations = [item.get('iterations', 0) for item in results]
+    # First try to get from explicit fields, then extract from messages/response
+    search_counts = []
+    iteration_counts = []
 
-    avg_metrics['avg_searches'] = sum(search_queries) / len(search_queries) if search_queries else 0.0
-    avg_metrics['avg_iterations'] = sum(iterations) / len(iterations) if iterations else 0.0
+    for item in results:
+        # Check for explicit fields first
+        if 'search_queries' in item:
+            search_counts.append(len(item['search_queries']))
+        elif 'messages' in item or 'response' in item:
+            # Extract from messages or response
+            searches, iterations = extract_search_stats(item)
+            search_counts.append(searches)
+        else:
+            search_counts.append(0)
+
+        if 'iterations' in item:
+            iteration_counts.append(item['iterations'])
+        elif 'messages' in item or 'response' in item:
+            # Use extracted iteration count if not explicitly provided
+            if len(search_counts) > len(iteration_counts):
+                _, iterations = extract_search_stats(item)
+                iteration_counts.append(iterations)
+        else:
+            iteration_counts.append(0)
+
+    avg_metrics['avg_searches'] = sum(search_counts) / len(search_counts) if search_counts else 0.0
+    avg_metrics['avg_iterations'] = sum(iteration_counts) / len(iteration_counts) if iteration_counts else 0.0
 
     return avg_metrics
 

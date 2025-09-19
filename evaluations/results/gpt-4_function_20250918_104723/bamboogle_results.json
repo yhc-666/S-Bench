@@ -4,8 +4,8 @@
   "metrics": {
     "exact_match": 0.392,
     "f1": 0.47075377955377956,
-    "avg_searches": 0.0,
-    "avg_iterations": 0.0
+    "avg_searches": 1.4,
+    "avg_iterations": 1.4
   },
   "results": [
     {
