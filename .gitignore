@@ -123,5 +123,6 @@ log/
 
 
 rag_server/
+results/
 
 .claude/
