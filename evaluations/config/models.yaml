@@ -1,6 +1,5 @@
 # Model configurations
-# Select which model to evaluate
-active_model: qwen3-8b  # Change to: gpt-4, deepseek, qwen3-8b, llama-8b
+active_model: qwen3-8b  #  gpt-4, deepseek, claude-3.5, qwen3-4b, qwen3-8b, qwen3-32b, etc.
 
 models:
   gpt-4:
@@ -21,6 +20,23 @@ models:
     temperature: 0.7
     timeout: 60
 
+  claude-3.5:
+    type: closed_source
+    api_key: ${CLAUDE_API_KEY}  # Set environment variable or replace with actual key
+    endpoint: https://api.anthropic.com/v1/chat/completions  # Or use your proxy endpoint
+    model_name: claude-3-5-sonnet-20241022
+    max_tokens: 2048
+    temperature: 0.7
+    timeout: 60
+
+  qwen3-4b:
+    type: open_source
+    model_path: qwen3-4b  # Using Qwen2.5-3B as closest to 4B
+    server_url: http://localhost:8000
+    max_tokens: 2048
+    temperature: 0.7
+    timeout: 30
+
   qwen3-8b:
     type: open_source
     model_path: qwen3-8b
@@ -28,6 +44,38 @@ models:
     max_tokens: 2048
     temperature: 0.7
     timeout: 30
+
+  qwen3-32b:
+    type: open_source
+    model_path: qwen3-32b
+    server_url: http://localhost:8000
+    max_tokens: 2048
+    temperature: 0.7
+    timeout: 90  
+
+  qwen3-4b-sft:
+    type: open_source
+    model_path: qwen3-4b-sft 
+    server_url: http://localhost:8000
+    max_tokens: 2048
+    temperature: 0.7
+    timeout: 30
+
+  qwen3-8b-sft:
+    type: open_source
+    model_path: qwen3-8b-sft
+    server_url: http://localhost:8000
+    max_tokens: 2048
+    temperature: 0.7
+    timeout: 30
+
+  qwen3-32b-sft:
+    type: open_source
+    model_path: /path/to/your/qwen3-32b-sft
+    server_url: http://localhost:8000
+    max_tokens: 2048
+    temperature: 0.7
+    timeout: 90
 
   llama-8b:
     type: open_source

@@ -46,6 +46,8 @@ def initialize_model(model_name: str, config: Dict) -> Any:
             return OpenAIModel(model_config)
         elif 'deepseek' in model_name:
             return DeepSeekModel(model_config)
+        elif 'claude' in model_name:
+            return OpenAIModel(model_config)  # Claude uses OpenAI-compatible API
     else:
         return VLLMModel(model_config)
 
@@ -120,19 +122,15 @@ def main():
 
     args = parser.parse_args()
 
-    # Load configurations
     print("Loading configurations...")
     configs = load_config(args.config_dir)
 
-    # Get model and datasets from config if not specified
     model_name = args.model or configs['models']['active_model']
     datasets_to_eval = args.datasets or configs['datasets']['active_datasets']
     search_method = args.method or configs['search_engines']['search_engine']['search_method']
 
-    # Get checkpoint_every from config or command line argument
     checkpoint_every = args.checkpoint_every
     if checkpoint_every is None:
-        # Try to get from evaluation config in datasets.yaml
         checkpoint_every = configs['datasets'].get('evaluation', {}).get('checkpoint_every', 100)
 
     print(f"Checkpoint every: {checkpoint_every} examples")
@@ -141,23 +139,18 @@ def main():
     print(f"Method: {search_method}")
     print(f"Datasets: {datasets_to_eval}")
 
-    # Initialize model
     print("Initializing model...")
     model = initialize_model(model_name, configs)
 
-    # Initialize search
     print("Initializing search...")
     search_handler = initialize_search(configs, search_method)
 
-    # Get prompt configuration
     prompt_config = get_prompt_config(configs, model_name, search_method)
 
-    # Create output directory
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_dir = os.path.join(args.output_dir, f"{model_name}_{search_method}_{timestamp}")
     os.makedirs(run_dir, exist_ok=True)
 
-    # Save configuration
     with open(os.path.join(run_dir, 'config.json'), 'w') as f:
         json.dump({
             'model': model_name,
@@ -168,22 +161,18 @@ def main():
 
     all_results = {}
 
-    # Evaluate each dataset
     for dataset_name in datasets_to_eval:
         print(f"\nEvaluating {dataset_name}...")
 
-        # Load dataset
         dataset_config = configs['datasets']['datasets'][dataset_name]
         dataset = BenchmarkDataset(dataset_config)
         data = dataset.load()
 
         print(f"Loaded {len(data)} examples")
 
-        # Evaluate in batches
         results = []
         checkpoint_file = os.path.join(run_dir, f"{dataset_name}_checkpoint.jsonl")
 
-        # Load checkpoint if exists
         if os.path.exists(checkpoint_file):
             with open(checkpoint_file, 'r') as f:
                 for line in f:
@@ -193,7 +182,6 @@ def main():
         for i in tqdm(range(len(results), len(data)), desc=f"Evaluating {dataset_name}"):
             item = data[i]
 
-            # Evaluate
             result = evaluate_single(
                 item['question'],
                 model,
@@ -202,8 +190,6 @@ def main():
                 search_method
             )
 
-            # Add metadata
-            # Simplified result format
             simplified_result = {
                 'id': item['id'],
                 'question': item['question'],
@@ -211,7 +197,6 @@ def main():
                 'prediction': result.get('answer', '')
             }
 
-            # Add method-specific data
             if search_method == 'tag':
                 simplified_result['response'] = result.get('response', '')
             elif search_method == 'function':
@@ -221,22 +206,18 @@ def main():
 
             results.append(result)
 
-            # Save checkpoint
             if (i + 1) % checkpoint_every == 0:
                 with open(checkpoint_file, 'a') as f:
                     for r in results[-checkpoint_every:]:
                         f.write(json.dumps(r) + '\n')
                 print(f"\nCheckpoint saved at {i + 1}")
 
-        # Save final checkpoint
         with open(checkpoint_file, 'w') as f:
             for r in results:
                 f.write(json.dumps(r) + '\n')
 
-        # Calculate metrics
         metrics = calculate_metrics(results, dataset_config['metrics'])
 
-        # Save results
         dataset_results = {
             'dataset': dataset_name,
             'num_examples': len(results),
@@ -244,18 +225,15 @@ def main():
             'results': results
         }
 
-        # Save detailed results
         with open(os.path.join(run_dir, f"{dataset_name}_results.json"), 'w') as f:
             json.dump(dataset_results, f, indent=2)
 
         all_results[dataset_name] = metrics
 
-        # Print metrics
         print(f"\nMetrics for {dataset_name}:")
         for metric, value in metrics.items():
             print(f"  {metric}: {value:.4f}")
 
-    # Save summary
     summary = {
         'model': model_name,
         'method': search_method,
@@ -268,7 +246,6 @@ def main():
 
     print(f"\nEvaluation complete! Results saved to {run_dir}")
 
-    # Print summary
     print("\n" + "=" * 50)
     print("SUMMARY")
     print("=" * 50)

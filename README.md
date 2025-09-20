@@ -50,7 +50,7 @@ For open-source models:
 python3 -m vllm.entrypoints.openai.api_server \
     --model /mnt/dolphinfs/hdd_pool/docker/user/hadoop-mtsearch-assistant/ai-search/deepsearch_files/LLMbasemodels/huggingface.co/Qwen/Qwen3-8B \
     --port 8000 \
-    --served-model-name qwen3-8b
+    --served-model-name qwen3-8b # 需要与models.yaml中注册的名字一致
 ```
 
 ## Run Evaluation
