@@ -42,13 +42,14 @@ class FunctionSearchHandler:
             schemas.append(schema)
         return schemas
 
-    def call_function(self, name: str, arguments: Dict[str, Any]) -> str:
+    def call_function(self, name: str, arguments: Dict[str, Any], is_open_source: bool = False) -> str:
         """
         Execute a function and return results.
 
         Args:
             name: Function name to execute
             arguments: Function arguments
+            is_open_source: Whether the model is open source
 
         Returns:
             Search results as formatted string
@@ -81,7 +82,7 @@ class FunctionSearchHandler:
         query = '\n'.join(query_parts) if query_parts else ''
 
         try:
-            results = self.search_engine.search(query)
+            results = self.search_engine.search(query, is_open_source)
             # results = "This is a placeholder for the search results."
 
             return results
@@ -134,22 +135,28 @@ class FunctionSearchHandler:
 
         return tool_calls
 
-    def format_tool_response(self, tool_id: str, result: str) -> Dict[str, str]:
+    def format_tool_response(self, tool_id: str, result: str, is_open_source: bool = False) -> Dict[str, str]:
         """
         Format tool response for model.
 
         Args:
             tool_id: Tool call ID
             result: Tool execution result
+            is_open_source: Whether the model is open source
 
         Returns:
             Formatted tool response message
         """
-        return {
+        response = {
             "role": "tool",
-            "tool_call_id": tool_id,
             "content": result
         }
+
+        # 闭源模型需要 tool_call_id
+        if not is_open_source:
+            response["tool_call_id"] = tool_id
+
+        return response
 
     def extract_final_answer(self, text: str) -> Optional[str]:
         """

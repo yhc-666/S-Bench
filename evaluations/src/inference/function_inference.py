@@ -1,7 +1,7 @@
 """Function-based inference implementation."""
 
 import json
-from typing import Dict, Any
+from typing import Dict, Any, List
 from ..search.function_search import FunctionSearchHandler
 
 
@@ -34,7 +34,6 @@ class FunctionInference:
         """
         tools = self.search_handler.get_tool_schemas()
 
-        # Initialize message history
         messages = []
 
         is_open_source = 'open_source' in str(self.prompt_config).lower() or '{{TOOLS_PLACEHOLDER}}' in self.prompt_config.get('system', '')
@@ -84,28 +83,46 @@ class FunctionInference:
                         })
 
                     # Execute each function call
-                    for call in function_calls:
-                        function_name = call['name']
-                        arguments = call['arguments']
+                    # 根据模型类型处理响应
+                    if is_open_source and len(function_calls) > 1:
+                        # 开源模型且有多个调用：合并响应
+                        all_results = []
+                        for call in function_calls:
+                            function_name = call['name']
+                            arguments = call['arguments']
+                            result = self.search_handler.call_function(function_name, arguments, is_open_source=True)
+                            all_results.append(result)
 
-                        result = self.search_handler.call_function(function_name, arguments)
+                        # 合并并重新格式化文档
+                        merged_content = self._merge_tool_responses(all_results)
 
-                        tool_response = self.search_handler.format_tool_response(
-                            call['id'],
-                            result
-                        )
-                        messages.append(tool_response)
+                        # 添加单个合并的响应（无tool_call_id）
+                        messages.append({
+                            "role": "tool",
+                            "content": merged_content
+                        })
+                    else:
+                        # 闭源模型或开源模型单个调用：独立处理每个调用
+                        for call in function_calls:
+                            function_name = call['name']
+                            arguments = call['arguments']
+                            result = self.search_handler.call_function(function_name, arguments, is_open_source=is_open_source)
+
+                            tool_response = self.search_handler.format_tool_response(
+                                call['id'],
+                                result,
+                                is_open_source=is_open_source
+                            )
+                            messages.append(tool_response)
 
                 else:
                     # No function calls, check for final answer
                     if response.get('content'):
-                        # Add final assistant message
                         messages.append({
                             "role": "assistant",
                             "content": response['content']
                         })
 
-                        # Try to extract answer
                         final_answer = self.search_handler.extract_final_answer(response['content'])
 
                         # If we have an answer, return results
@@ -117,7 +134,6 @@ class FunctionInference:
 
                         # If no answer found but content exists, continue if we haven't reached max iterations
                         if iterations >= self.max_iterations:
-                            # Use the last content as answer if no explicit answer tags
                             final_answer = response['content']
                             break
                     else:
@@ -133,6 +149,27 @@ class FunctionInference:
             return {
                 'answer': None,
                 'error': str(e),
-                'messages': messages  # Simplified: only keep messages
+                'messages': messages  
             }
+
+    def _merge_tool_responses(self, responses: List[str]) -> str:
+        """合并多个tool响应的文档并重新编号"""
+        import random
+        import re
+
+        all_docs = []
+        for response in responses:
+            # 解析新格式文档 **n**\ntitle: ...\ncontent: ...
+            pattern = r'\*\*(\d+)\*\*\n(.*?)(?=\*\*\d+\*\*\n|$)'
+            matches = re.findall(pattern, response, re.DOTALL)
+            for match in matches:
+                all_docs.append(match[1])  
+
+        random.shuffle(all_docs)
+
+        formatted = []
+        for idx, doc_content in enumerate(all_docs, 1):
+            formatted.append(f"**{idx}**\n{doc_content.strip()}")
+
+        return '\n'.join(formatted)
 

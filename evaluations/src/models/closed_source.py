@@ -114,7 +114,6 @@ class DeepSeekModel(BaseModel):
             "Content-Type": "application/json"
         }
 
-        # Use chat completions endpoint with messages format
         data = {
             "model": self.model_name,
             "messages": [{"role": "user", "content": prompt}],
@@ -126,14 +125,13 @@ class DeepSeekModel(BaseModel):
         for retry in range(3):
             try:
                 response = requests.post(
-                    self.endpoint,  # Use the chat completions endpoint
+                    self.endpoint,  
                     headers=headers,
                     json=data,
                     timeout=self.timeout
                 )
                 response.raise_for_status()
 
-                # Get the response content
                 content = response.json()['choices'][0]['message']['content']
 
                 # Append the stop sequence that was triggered

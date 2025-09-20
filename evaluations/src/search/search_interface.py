@@ -16,7 +16,7 @@ class SearchEngine(ABC):
         self.max_retries = config.get('max_retries', 3)
         self.top_k = config.get('top_k', 3)
 
-    def search(self, query: str) -> str:
+    def search(self, query: str, is_open_source: bool = False) -> str:
         """Execute search and return formatted results."""
         payload = {
             "queries": [query],
@@ -33,13 +33,13 @@ class SearchEngine(ABC):
                 )
                 response.raise_for_status()
                 results = response.json()['result'][0]
-                return self._format_results(results)
+                return self._format_results(results, is_open_source)
             except Exception as e:
                 if retry == self.max_retries - 1:
                     raise e
                 time.sleep(2 ** retry)
 
-    def _format_results(self, results: List[Dict]) -> str:
+    def _format_results(self, results: List[Dict], is_open_source: bool = False) -> str:
         """Format search results for insertion."""
         formatted = []
         for idx, doc in enumerate(results):
@@ -47,5 +47,12 @@ class SearchEngine(ABC):
             lines = content.split('\n')
             title = lines[0] if lines else ""
             text = '\n'.join(lines[1:]) if len(lines) > 1 else content
-            formatted.append(f"Doc {idx + 1}(Title: {title}) {text}")
+
+            if is_open_source:
+                # 开源模型使用新格式
+                formatted.append(f"**{idx + 1}**\ntitle: {title}\ncontent: {text}")
+            else:
+                # 闭源模型保持原格式
+                formatted.append(f"Doc {idx + 1}(Title: {title}) {text}")
+
         return '\n'.join(formatted)
