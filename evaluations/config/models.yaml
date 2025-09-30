@@ -1,32 +1,50 @@
 # Model configurations
-active_model: qwen3-8b  #  gpt-4, deepseek, claude-3.5, qwen3-4b, qwen3-8b, qwen3-32b, etc.
+active_model: qwen3-8b  #  gpt-4, gpt-3.5, claude-3.7, qwen3-4b, qwen3-8b, qwen3-32b, etc.
 
 models:
   gpt-4:
     type: closed_source
     api_key: 1783462889744248849
     endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
-    model_name: gpt-4o-2024-08-06
+    model_name: gpt-4-0613 
     max_tokens: 2048
-    temperature: 0.7
+    temperature: 0
+    timeout: 60
+    
+  grok-3:
+    type: closed_source
+    api_key: 1783462889744248849
+    endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
+    model_name: grok-3 
+    max_tokens: 2048
+    temperature: 0
     timeout: 60
 
-  deepseek:
+  gpt-5:
     type: closed_source
-    api_key: sk-b2f85d9829f343cd909e5f7ed4d50bd4
-    endpoint: https://api.deepseek.com/v1/chat/completions
-    model_name: deepseek-chat
+    api_key: 1783462889744248849
+    endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
+    model_name: gpt-5
     max_tokens: 2048
-    temperature: 0.7
+    temperature: 0
     timeout: 60
-
-  claude-3.5:
+    
+  claude-4-sonnet:
     type: closed_source
-    api_key: ${CLAUDE_API_KEY}  # Set environment variable or replace with actual key
-    endpoint: https://api.anthropic.com/v1/chat/completions  # Or use your proxy endpoint
-    model_name: claude-3-5-sonnet-20241022
+    api_key: 1783462889744248849  # Set environment variable or replace with actual key
+    endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions  # Or use your proxy endpoint
+    model_name: aws.claude-sonnet-4
     max_tokens: 2048
-    temperature: 0.7
+    temperature: 0
+    timeout: 60
+    
+  claude-3.7:
+    type: closed_source
+    api_key: 1783462889744248849  # Set environment variable or replace with actual key
+    endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions  # Or use your proxy endpoint
+    model_name: anthropic.claude-3.7-sonnet
+    max_tokens: 2048
+    temperature: 0
     timeout: 60
 
   qwen3-4b:

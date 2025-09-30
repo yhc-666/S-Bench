@@ -89,14 +89,15 @@ def evaluate_single(
     model: Any,
     search_handler: Any,
     prompt_config: Dict,
-    search_method: str
+    search_method: str,
+    max_iterations: int = 10
 ) -> Dict[str, Any]:
     """Evaluate a single question."""
     try:
         if search_method == 'tag':
-            inference = TagBasedInference(model, search_handler, prompt_config)
+            inference = TagBasedInference(model, search_handler, prompt_config, max_iterations)
         elif search_method == 'function':
-            inference = FunctionInference(model, search_handler, prompt_config)
+            inference = FunctionInference(model, search_handler, prompt_config, max_iterations)
         else:
             raise ValueError(f"Unknown search method: {search_method}")
 
@@ -147,6 +148,10 @@ def main():
 
     prompt_config = get_prompt_config(configs, model_name, search_method)
 
+    # Get max_iterations from model config
+    model_config = configs['models']['models'][model_name]
+    max_iterations = model_config.get('max_iterations', 10)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_dir = os.path.join(args.output_dir, f"{model_name}_{search_method}_{timestamp}")
     os.makedirs(run_dir, exist_ok=True)
@@ -187,7 +192,8 @@ def main():
                 model,
                 search_handler,
                 prompt_config,
-                search_method
+                search_method,
+                max_iterations
             )
 
             simplified_result = {
@@ -196,6 +202,8 @@ def main():
                 'gold_answer': item['answers'][0] if item['answers'] else '',  # Use first answer as gold
                 'prediction': result.get('answer', '')
             }
+
+            print(f"Result: {simplified_result}")
 
             if search_method == 'tag':
                 simplified_result['response'] = result.get('response', '')

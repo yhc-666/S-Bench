@@ -20,7 +20,7 @@ class BenchmarkDataset(BaseDataset):
 
         # Load from HuggingFace
         print(f"Loading {self.subset} from HuggingFace...")
-        dataset = datasets.load_dataset(self.source, self.subset, split='test')
+        dataset = datasets.load_dataset(self.source, self.subset, split=self.split)
 
         # Process dataset
         processed_data = []

@@ -13,6 +13,7 @@ class BaseDataset(ABC):
         self.config = config
         self.source = config['source']
         self.subset = config['subset']
+        self.split = config.get('split', 'test')
         self.test_size = config.get('test_size', -1)
         self.cache_dir = f"./data/{self.subset}"
 

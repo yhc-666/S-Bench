@@ -7,11 +7,11 @@ from ..search.tag_search import TagBasedSearch
 class TagBasedInference:
     """Handle tag-based search inference."""
 
-    def __init__(self, model, search_handler: TagBasedSearch, prompt_config: Dict):
+    def __init__(self, model, search_handler: TagBasedSearch, prompt_config: Dict, max_iterations: int = 10):
         self.model = model
         self.search_handler = search_handler
         self.prompt_config = prompt_config
-        self.max_iterations = 10
+        self.max_iterations = max_iterations
 
     def run(self, question: str) -> Dict[str, Any]:
         """Run inference with tag-based search."""
@@ -49,6 +49,7 @@ class TagBasedInference:
             elif reason == "search_needed":
                 query = self.search_handler.extract_search_query(response)
                 if query:
+                    print(f"Search Query: {query}")
                     results = self.search_handler.search_engine.search(query)
                     # results = "test_placeholder"
                     search_text = self.search_handler.format_search_results(results)

@@ -19,7 +19,11 @@
       "Bash(ls:*)",
       "Bash(done)",
       "Bash(timeout:*)",
-      "WebFetch(domain:docs.vllm.ai)"
+      "WebFetch(domain:docs.vllm.ai)",
+      "Bash(head:*)",
+      "Bash(find:*)",
+      "Bash(pip install datasets tqdm pyyaml)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

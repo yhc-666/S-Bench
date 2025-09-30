@@ -8,7 +8,7 @@ from ..search.function_search import FunctionSearchHandler
 class FunctionInference:
     """Handle function-based inference with multiple tool support."""
 
-    def __init__(self, model, search_handler: FunctionSearchHandler, prompt_config: Dict):
+    def __init__(self, model, search_handler: FunctionSearchHandler, prompt_config: Dict, max_iterations: int = 10):
         """
         Initialize function inference.
 
@@ -16,11 +16,12 @@ class FunctionInference:
             model: Language model instance
             search_handler: Function search handler
             prompt_config: Prompt configuration
+            max_iterations: Maximum number of iterations
         """
         self.model = model
         self.search_handler = search_handler
         self.prompt_config = prompt_config
-        self.max_iterations = 10
+        self.max_iterations = max_iterations
 
     def run(self, question: str) -> Dict[str, Any]:
         """
