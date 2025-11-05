@@ -4,7 +4,7 @@ active_model: qwen3-8b  #  gpt-4, gpt-3.5, claude-3.7, qwen3-4b, qwen3-8b, qwen3
 models:
   gpt-4:
     type: closed_source
-    api_key: 1783462889744248849
+    api_key: **
     endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
     model_name: gpt-4-0613 
     max_tokens: 2048
@@ -13,7 +13,7 @@ models:
     
   grok-3:
     type: closed_source
-    api_key: 1783462889744248849
+    api_key: **
     endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
     model_name: grok-3 
     max_tokens: 2048
@@ -22,7 +22,7 @@ models:
 
   gpt-5:
     type: closed_source
-    api_key: 1783462889744248849
+    api_key: **
     endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions # https://aigc.sankuai.com/v1/openai/native/chat/completions
     model_name: gpt-5
     max_tokens: 2048
@@ -31,7 +31,7 @@ models:
     
   claude-4-sonnet:
     type: closed_source
-    api_key: 1783462889744248849  # Set environment variable or replace with actual key
+    api_key: **  # Set environment variable or replace with actual key
     endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions  # Or use your proxy endpoint
     model_name: aws.claude-sonnet-4
     max_tokens: 2048
@@ -40,7 +40,7 @@ models:
     
   claude-3.7:
     type: closed_source
-    api_key: 1783462889744248849  # Set environment variable or replace with actual key
+    api_key: **  # Set environment variable or replace with actual key
     endpoint: https://aigc.sankuai.com/v1/openai/native/chat/completions  # Or use your proxy endpoint
     model_name: anthropic.claude-3.7-sonnet
     max_tokens: 2048
